@@ -1,6 +1,6 @@
 "use client"
 import axios from 'axios';
-import {useLayoutEffect, useState} from "react";
+import {useCallback, useLayoutEffect, useState} from "react";
 import {useForm, SubmitHandler} from "react-hook-form"
 import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from "../redux/hook";
@@ -14,7 +14,6 @@ import './page.scss'
 
 // gets the backEnd url from our .env file
 const backEndPort = "http://localhost:4000";
-console.log(backEndPort, 'see strategy')
 
 type LoginForRHF = {
     username: string
@@ -64,6 +63,13 @@ export default function LoginPage() {
         });
     }
 
+    const getSessionData = useCallback(() => {
+        axios.post(`${backEndPort}/users/getSessionData`, {}, {headers: {'Content-Type': 'application/json'}})
+        .then((res) => {
+            console.log(res.data)
+        })
+    }, [])
+
     return (
         <div className="block relative my-14 padding-x">
             <div className="hidden">
@@ -100,7 +106,7 @@ export default function LoginPage() {
                 <div className="w-3/12">
                     <div className="titleUp">Login</div>
                     <div className="btnCvr">
-                        <button className="">Get session data</button>
+                        <button onClick={() => getSessionData()}>Get session data</button>
                     </div>
                     <div className=""></div>
                 </div>
