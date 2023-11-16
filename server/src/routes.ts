@@ -3,6 +3,7 @@ import {login_this_user, logout_this_user} from './controllers/users.controller'
 import {log, errorLogger} from './logger/'
 import {show_bad_message, show_good_message } from "./functions/utils";
 import { requireUser } from "./middleware/requireUser";
+const Cookies = require('cookies');
 
 const routes = (app: Express) => {
     // checks to see if our servers are running as they should
@@ -31,7 +32,27 @@ const routes = (app: Express) => {
     // this route logsIn a new user
     app.post('/users/login', async (req: Request, res: Response) => {
         // const dts = await login_this_user(req.body)
-        res.json(req.body)
+        // res.json(dts)
+
+        const cookies = new Cookies(req, res);
+
+        // Set a cookie with a maxAge of 2 hours (in milliseconds)
+        const twoHoursInMilliseconds = 2 * 60 * 60 * 1000;
+        cookies.set('myCookie', 'Hello, Cookie!', { maxAge: twoHoursInMilliseconds });
+      
+        res.json('Cookie has been set!');
+    })
+
+    // gets the session data
+    app.post('/users/getSessionData', async (req: Request, res: Response) => {
+        // Retrieve a cookie
+
+        const cookies = new Cookies(req, res);
+
+        // Retrieve a cookie value
+        const myCookieValue = cookies.get('myCookie');
+      
+        res.json(`Value of myCookie: ${myCookieValue}`);
     })
 
     // this route logout the user
